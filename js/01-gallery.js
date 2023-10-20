@@ -11,21 +11,24 @@ const markup = galleryItems
       `<li class="gallery__item"><a class="gallery__link" href=${galleryItems.original} ><img class="gallery__image" src = ${galleryItems.preview} data-source=${galleryItems.original} alt = ${galleryItems.description} /> </a></li>`
   )
   .join("");
-
 myList.insertAdjacentHTML("beforeend", markup);
 
+let instance = basicLightbox.create("");
+function escListener(event) {
+  if (event.key === "Escape") {
+    instance.close();
+    document.removeEventListener("keydown", escListener);
+  }
+}
 myList.addEventListener("click", (event) => {
   if (event.target.nodeName !== "IMG") {
     return;
   }
-  //event.stopImmediatePropagation();
-  //   event.target.src = "";
+  event.preventDefault();
   const selectedImg = event.target.attributes["data-source"].value;
-  const instance = basicLightbox.create(`
-    <img src=${selectedImg} width="1280">
-`);
+  instance = basicLightbox.create(`<img src=${selectedImg}>`);
 
   instance.show();
 
-  //   console.log(selectedImg);
+  document.addEventListener("keydown", escListener);
 });
